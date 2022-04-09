@@ -6,7 +6,7 @@ function App() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const [key, setKey] = useState<ISnackbarKey>()
     const handleShowSnackbar = () => {
-        const _key = enqueueSnackbar("Hello World", {
+        const _key = enqueueSnackbar("Hello World"+Math.random(), {
             variant: "success",
             anchorOrigin: {
                 vertical: "top",

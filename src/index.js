@@ -1,3 +1,11 @@
-export {default as SnackbarProvider} from './SnackbarProvider';
-export {default as SnackbarContent} from './SnackbarContent';
-export {default as useSnackbar} from './useSnackbar';
+import SnackbarContent from './SnackbarContent/SnackbarContent';
+import SnackbarProvider from './SnackbarProvider';
+import useSnackbar from './useSnackbar';
+
+export {
+    SnackbarContent,
+    useSnackbar,
+    SnackbarProvider
+
+};
+

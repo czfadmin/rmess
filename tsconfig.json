@@ -21,12 +21,12 @@
     "noUnusedParameters": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "*": ["src/*", "node_modules/*"],
-    },
+//    "paths": {
+//      "*": ["src/*", "node_modules/*"],
+//    },
   },
   "typedocOptions": {
-    "inputFiles": ["./src/index.d.ts"],
+    "inputFiles": ["src/**/index.d.ts"],
     "mode": "file",
     "json": "typedoc.json",
     "excludeExternals": true,

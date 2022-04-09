@@ -1,6 +1,6 @@
-import SnackbarContext from "SnackbarContext";
+import SnackbarContext from "./SnackbarContext";
 import {useContext} from "react";
-import {IProviderContext} from "index";
+import {IProviderContext} from ".";
 
 const useSnackbar = (): IProviderContext => useContext(SnackbarContext)
 export default useSnackbar

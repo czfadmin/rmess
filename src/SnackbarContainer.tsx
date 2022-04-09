@@ -1,8 +1,8 @@
 import * as React from "react";
 import {ISnackbarProviderProps} from ".";
 import clsx from "clsx";
-import {SNACKBAR_INDENTS} from "utils/constrants";
-import { styled } from "@mui/material";
+import {SNACKBAR_INDENTS} from "./utils/constrants";
+import {styled} from "@mui/material";
 
 const collapse = {
     // Material-UI 4.12.x and above uses MuiCollapse-root; earlier versions use
@@ -25,10 +25,11 @@ const classes = {
     center: `${componentName}-center`,
 };
 
-const Root = styled('div')(({ theme }:any) => ({
+const Root = styled('div')(({theme}: any) => ({
     [`&.${classes.root}`]: {
         boxSizing: 'border-box',
         display: 'flex',
+        flexDirection: "column",
         maxHeight: '100%',
         position: 'fixed',
         zIndex: theme.zIndex.snackbar,
@@ -99,12 +100,13 @@ interface ISnackbarContainerProps {
 
 // Snackbar容器
 const SnackbarContainer: React.FC<ISnackbarContainerProps> = (props) => {
-    const { className, anchorOrigin, dense, ...other } = props;
+    const {className, anchorOrigin, dense, ...other} = props;
 
+    // 配置容器显示位置
     const combinedClassname = clsx(
         classes[anchorOrigin.vertical],
         classes[anchorOrigin.horizontal],
-        { [classes.rootDense]: dense },
+        {[classes.rootDense]: dense},
         classes.root, // root should come after others to override maxWidth
         className,
     );

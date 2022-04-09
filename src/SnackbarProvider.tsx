@@ -9,17 +9,21 @@ import {
     ISnackbarMessage,
     ISnackbarOption,
     ISnackbarProviderProps,
-    RequiredBy, Snack,
+    Snack,
     TransitionHandlerProps,
-} from "index";
-import {SnackbarItem} from "./Snackbar/index";
-import {DEFAULTS, isDefined, merge, originKeyExtractor, REASONS} from "utils/constrants";
-import createChainedFunction from "utils/createChainedFunction";
+} from "./index";
+import {
+    DEFAULTS,
+    isDefined,
+    merge,
+    originKeyExtractor,
+    REASONS
+} from "./utils/constrants";
+import createChainedFunction from "./utils/createChainedFunction";
+import SnackbarItem from "./Snackbar/SnackbarItem";
 
 type Reducer = (state: ISnackbarProviderState) => ISnackbarProviderState;
 type SnacksByPosition = { [key: string]: Snack[] };
-
-
 
 
 //  Snackbar Provider State
@@ -120,6 +124,7 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
      * Hide a snackbar after its timeout.
      */
     handleCloseSnack: TransitionHandlerProps['onClose'] = (event, reason, key) => {
+        console.log(key)
         if (this.props.onClose) {
             this.props.onClose(event, reason, key)
         }
@@ -267,6 +272,7 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
             maxSnack,
             ...props
         } = this.props;
+
         const {contextValue} = this.state;
 
         const categ = this.state.snacks.reduce<SnacksByPosition>((acc, current) => {
@@ -277,9 +283,11 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
                 [category]: [...existingOfCategory, current]
             }
         }, {})
+
+        // 根据不同anchor显示 不同的显示区域的Snackbar
         const snackbars = Object.keys(categ).map((origin) => {
             const snacks = categ[origin]
-            console.log(snacks)
+
             return (
                 <SnackbarContainer
                     key={origin}
@@ -291,9 +299,6 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
                             {...props}
                             key={snack.key}
                             snack={snack}
-                            dense={dense}
-                            iconVariant={iconVariant}
-                            hideIconVariant={hideIconVariant}
                             onClose={this.handleCloseSnack}
                             onExited={createChainedFunction(
                                 [this.handleExitedSnack, this.props.onExited])}

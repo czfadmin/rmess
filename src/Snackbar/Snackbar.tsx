@@ -1,121 +1,294 @@
-/**
- * @link https://github.com/mui-org/material-ui/blob/master/packages/material-ui/src/Snackbar/Snackbar.js
- */
+import {capitalize, Slide, styled, useTheme, useThemeProps,} from "@mui/material";
 import * as React from 'react';
-
+import {useEffect, useRef} from 'react';
+import clsx from 'clsx';
+import {unstable_composeClasses as composeClasses} from '@mui/base';
+import ClickAwayListener from '@mui/base/ClickAwayListener';
 import useEventCallback from '../utils/useEventCallback';
-import {REASONS} from "utils/constrants";
-import {ClickAwayListener} from "@mui/base";
-import {ISnackbarProps} from "index";
+import SnackbarContent from '../SnackbarContent/SnackbarContent';
+import {getSnackbarUtilityClass} from './snackbarClasses';
+import {ISnackbarProps} from "./index";
 
-const Snackbar =
-    React.forwardRef<any, ISnackbarProps & { open: boolean, onClose: any }>(
-        (props, ref) => {
-            const {
-                children,
-                autoHideDuration,
-                ClickAwayListenerProps,
-                disableWindowBlurListener = false,
-                onClose,
-                onMouseEnter,
-                onMouseLeave,
-                open,
-                resumeHideDuration,
-                ...other
-            } = props;
+const useUtilityClasses = (ownerState: any) => {
+    const {classes, anchorOrigin} = ownerState;
 
-            const timerAutoHide = React.useRef<any>();
+    const slots = {
+        root: [
+            'root',
+            `anchorOrigin${capitalize(anchorOrigin.vertical)}${capitalize(
+                anchorOrigin.horizontal)}`,
+        ],
+    };
 
-            const handleClose = useEventCallback((args: any[]) => {
-                if (onClose) {
-                    onClose(...args);
-                }
-            });
+    return composeClasses(slots, getSnackbarUtilityClass, classes);
+};
 
-            const setAutoHideTimer = useEventCallback((autoHideDurationParam: number) => {
-                if (!onClose || autoHideDurationParam == null) {
-                    return;
-                }
+const SnackbarRoot = styled('div', {
+    name: 'MuiSnackbar',
+    slot: 'Root',
+    overridesResolver: (props: any, styles: any) => {
+        const {ownerState} = props;
 
-                clearTimeout(timerAutoHide.current);
-                timerAutoHide.current = setTimeout(() => {
-                    handleClose(null, REASONS.TIMEOUT);
-                }, autoHideDurationParam);
-            });
+        return [
+            styles.root,
+            styles[
+                `anchorOrigin${capitalize(ownerState.anchorOrigin.vertical)}${capitalize(
+                    ownerState.anchorOrigin.horizontal,
+                )}`],
+        ];
+    },
+})(({theme, ownerState}: any) => {
+    const center = {
+        ...(!ownerState.isRtl && {
+            left: '50%',
+            right: 'auto',
+            transform: 'translateX(-50%)',
+        }),
+        ...(ownerState.isRtl && {
+            right: '50%',
+            left: 'auto',
+            transform: 'translateX(50%)',
+        }),
+    };
 
-            React.useEffect(() => {
-                if (open) {
-                    setAutoHideTimer(autoHideDuration);
-                }
+    return {
+        zIndex: theme.zIndex.snackbar,
+        position: 'relative',
+        display: 'flex',
+        left: 8,
+        right: 8,
+        height: 'auto',
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...(ownerState.anchorOrigin.horizontal === 'left' &&
+            {justifyContent: 'flex-start'}),
+        ...(ownerState.anchorOrigin.horizontal === 'right' &&
+            {justifyContent: 'flex-end'}),
+        [theme.breakpoints.up('sm')]: {
+            //...(ownerState.anchorOrigin.vertical === 'top' ? {top: 24} : {bottom: 24}),
+            ...(ownerState.anchorOrigin.horizontal === 'center' && center),
+            ...(ownerState.anchorOrigin.horizontal === 'left' && {
+                ...(!ownerState.isRtl && {
+                    left: 24,
+                    right: 'auto',
+                }),
+                ...(ownerState.isRtl && {
+                    right: 24,
+                    left: 'auto',
+                }),
+            }),
+            ...(ownerState.anchorOrigin.horizontal === 'right' && {
+                ...(!ownerState.isRtl && {
+                    right: 24,
+                    left: 'auto',
+                }),
+                ...(ownerState.isRtl && {
+                    left: 24,
+                    right: 'auto',
+                }),
+            }),
+        },
+    };
+});
 
-                return () => {
-                    clearTimeout(timerAutoHide.current);
-                };
-            }, [open, autoHideDuration, setAutoHideTimer]);
+const Snackbar = React.forwardRef(function Snackbar(inProps: ISnackbarProps, ref: any) {
+    //@ts-ignore
+    const props = useThemeProps({props: inProps, name: 'MuiSnackbar'}),
+        theme: any = useTheme(), defaultTransitionDuration = {
+            enter: theme.transitions.duration.enteringScreen,
+            exit: theme.transitions.duration.leavingScreen,
+        }, {
+            action,
+            anchorOrigin: {vertical, horizontal} = {vertical: 'bottom', horizontal: 'left'},
+            autoHideDuration = null,
+            children,
+            className,
+            ClickAwayListenerProps,
+            ContentProps,
+            disableWindowBlurListener = false,
+            message,
+            onBlur,
+            onClose,
+            onFocus,
+            open,
+            resumeHideDuration,
+            TransitionComponent = Slide,
+            transitionDuration = defaultTransitionDuration,
+            // @ts-ignore
+            TransitionProps: {onEnter, onExited, ...transitionProps},
+            ...other
+        } = props, isRtl = theme.direction === 'rtl',
+        ownerState = {...props, anchorOrigin: {vertical, horizontal}, isRtl},
+        classes = useUtilityClasses(ownerState),
+        timerAutoHide = useRef(), [exited, setExited] = React.useState(true),
+        handleClose = useEventCallback((args: any[]) => {
+            if (onClose) {
+                // @ts-ignore
+                onClose(...args);
+            }
+        }), setAutoHideTimer = useEventCallback((autoHideDurationParam: any) => {
+            if (!onClose || autoHideDurationParam == null) {
+                return;
+            }
 
-            /**
-             * Pause the timer when the user is interacting with the Snackbar
-             * or when the user hide the window.
-             */
-            const handlePause = () => {
-                clearTimeout(timerAutoHide.current);
-            };
-
-            /**
-             * Restart the timer when the user is no longer interacting with the Snackbar
-             * or when the window is shown back.
-             */
-            const handleResume = React.useCallback(() => {
-                if (autoHideDuration != null) {
-                    setAutoHideTimer(
-                        resumeHideDuration != null ? resumeHideDuration :
-                            autoHideDuration * 0.5);
-                }
-            }, [autoHideDuration, resumeHideDuration, setAutoHideTimer]);
-
-            const handleMouseEnter = (event: any) => {
-                if (onMouseEnter) {
-                    onMouseEnter(event);
-                }
-                handlePause();
-            };
-
-            const handleMouseLeave = (event: any) => {
-                if (onMouseLeave) {
-                    onMouseLeave(event);
-                }
-                handleResume();
-            };
-
-            const handleClickAway = (event: any) => {
-                if (onClose) {
-                    onClose(event, REASONS.CLICKAWAY);
-                }
-            };
-
-            React.useEffect(() => {
-                if (!disableWindowBlurListener && open) {
-                    window.addEventListener('focus', handleResume);
-                    window.addEventListener('blur', handlePause);
-
-                    return () => {
-                        window.removeEventListener('focus', handleResume);
-                        window.removeEventListener('blur', handlePause);
-                    };
-                }
-
-                return undefined;
-            }, [disableWindowBlurListener, handleResume, open]);
-
-            return (
-                <ClickAwayListener onClickAway={handleClickAway} {...ClickAwayListenerProps}>
-                    <div onMouseEnter={handleMouseEnter}
-                         onMouseLeave={handleMouseLeave}
-                         ref={ref!!} {...other}>
-                        {children}
-                    </div>
-                </ClickAwayListener>
-            );
+            clearTimeout(timerAutoHide.current);
+            //@ts-ignore
+            timerAutoHide.current = setTimeout(() => {
+                handleClose(null, 'timeout');
+            }, autoHideDurationParam);
         });
 
-export default Snackbar;
+
+    useEffect(() => {
+        if (open) {
+            setAutoHideTimer(autoHideDuration);
+        }
+
+        return () => {
+            clearTimeout(timerAutoHide.current);
+        };
+    }, [open, autoHideDuration, setAutoHideTimer]);
+
+    // Pause the timer when the user is interacting with the Snackbar
+    // or when the user hide the window.
+    const handlePause = () => {
+        clearTimeout(timerAutoHide.current);
+    };
+
+
+    // Restart the timer when the user is no longer interacting with the Snackbar
+    // or when the window is shown back.
+    const handleResume = React.useCallback(() => {
+        if (autoHideDuration != null) {
+            setAutoHideTimer(
+                resumeHideDuration != null ? resumeHideDuration : autoHideDuration * 0.5);
+        }
+    }, [autoHideDuration, resumeHideDuration, setAutoHideTimer]);
+
+    const handleFocus = (event: any) => {
+        if (onFocus) {
+            onFocus(event);
+        }
+        handlePause();
+    };
+
+
+    const handleMouseEnter = (event: any) => {
+        if (onMouseEnter) {
+            onMouseEnter(event);
+        }
+        handlePause();
+    };
+
+    const handleBlur = (event: any) => {
+        if (onBlur) {
+            onBlur(event);
+        }
+        handleResume();
+    };
+    const handleMouseLeave = (event: any) => {
+        if (onMouseLeave) {
+            onMouseLeave(event);
+        }
+        handleResume();
+    };
+
+    const handleClickAway = (event: any) => {
+        if (onClose) {
+            onClose(event, 'clickaway');
+        }
+    };
+
+    const handleExited = (node: any) => {
+        setExited(true);
+
+        if (onExited) {
+            onExited(node);
+        }
+    };
+
+    const handleEnter = (node: any, isAppearing: any) => {
+        setExited(false);
+
+        if (onEnter) {
+            onEnter(node, isAppearing);
+        }
+    };
+
+    useEffect(() => {
+        // TODO: window global should be refactored here
+        if (!disableWindowBlurListener && open) {
+            window.addEventListener('focus', handleResume);
+            window.addEventListener('blur', handlePause);
+
+            return () => {
+                window.removeEventListener('focus', handleResume);
+                window.removeEventListener('blur', handlePause);
+            };
+        }
+
+        return undefined;
+    }, [disableWindowBlurListener, handleResume, open]);
+
+    useEffect(() => {
+        if (!open) {
+            return undefined;
+        }
+
+        /**
+         * @param {KeyboardEvent} nativeEvent
+         */
+        function handleKeyDown(nativeEvent: any) {
+            if (!nativeEvent.defaultPrevented) {
+                // IE11, Edge (prior to using Bink?) use 'Esc'
+                if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
+                    // not calling `preventDefault` since we don't know if people may ignore this event e.g. a permanently open snackbar
+                    if (onClose) {
+                        onClose(nativeEvent, 'escapeKeyDown');
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [exited, open, onClose]);
+
+    // So we only render active snackbars.
+    if (!open && exited) {
+        return null;
+    }
+
+    return (
+        <ClickAwayListener onClickAway={handleClickAway} {...ClickAwayListenerProps}>
+            <SnackbarRoot
+                className={clsx(classes.root, className)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                ownerState={ownerState}
+                ref={ref}
+                {...other}
+            >
+                <TransitionComponent
+                    appear
+                    in={open}
+                    timeout={transitionDuration}
+                    direction={vertical === 'top' ? 'down' : 'up'}
+                    onEnter={handleEnter}
+                    onExited={handleExited}
+                    {...transitionProps}
+                >
+                    {children || <SnackbarContent message={message}
+                                                  action={action} {...ContentProps} />}
+                </TransitionComponent>
+            </SnackbarRoot>
+        </ClickAwayListener>
+    );
+});
+
+export default Snackbar

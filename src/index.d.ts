@@ -24,9 +24,6 @@ export type SnackbarAction = React.ReactNode | ((key: ISnackbarKey) => React.Rea
 
 export type SnackbarContentCallback = React.ReactNode | ((key: ISnackbarKey,
                                                           message: ISnackbarMessage) => React.ReactNode);
-
-export type ISnackbarContentProps = React.HTMLAttributes<HTMLDivElement>;
-
 export type SnackbarClassKey =
     | 'root'
     | 'anchorOriginTopCenter'
