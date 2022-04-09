@@ -1,0 +1,45 @@
+{
+    "name": "react-message",
+    "version": "1.0.0",
+    "description": "",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "rollup -c rollup.config.js",
+        "dev": "rollup -c -w"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "peerDependencies": {
+        "@emotion/react": "^11.8.2",
+        "@emotion/styled": "^11.8.1"
+    },
+    "peerDependenciesMeta": {
+        "@emotion/react": {
+            "optional": true
+        },
+        "@emotion/styled": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@emotion/react": "^11.8.2",
+        "@emotion/styled": "^11.8.1",
+        "@rollup/plugin-typescript": "^8.3.1",
+        "@types/react-dom": "^18.0.0",
+        "babel-plugin-optimize-clsx": "^2.6.2",
+        "clsx": "^1.1.1",
+        "rollup-plugin-copy": "^3.4.0",
+        "tslib": "^2.3.1",
+        "typescript": "^4.6.3"
+    },
+    "dependencies": {
+        "@mui/base": "^5.0.0-alpha.74",
+        "@mui/material": "^5.6.0",
+        "@mui/system": "^5.5.3",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "rollup-plugin-bundle-size": "^1.0.3"
+    }
+}
