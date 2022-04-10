@@ -21,9 +21,6 @@
     "noUnusedParameters": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
-//    "paths": {
-//      "*": ["src/*", "node_modules/*"],
-//    },
   },
   "typedocOptions": {
     "inputFiles": ["src/**/index.d.ts"],

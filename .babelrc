@@ -1,4 +1,9 @@
 {
-  "presets": ["@babel/preset-react"],
-  "plugins": ["babel-plugin-optimize-clsx"]
+  "presets": [
+//
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    "babel-plugin-optimize-clsx"
+  ]
 }

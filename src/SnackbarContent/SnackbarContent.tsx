@@ -3,7 +3,7 @@ import * as React from 'react';
 import {unstable_composeClasses as composeClasses} from '@mui/base';
 
 import {getSnackbarContentUtilityClass} from './snackbarContentClasses';
-import {ISnackbarContentProps} from ".";
+import {ISnackbarContentProps} from "../index";
 import clsx from "clsx";
 
 const useUtilityClasses = (ownerState: any) => {

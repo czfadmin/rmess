@@ -1,10 +1,16 @@
 import * as React from "react";
-import {AlertProps, SnackbarContentProps, StandardProps, Theme} from "@mui/material";
+import {
+    AlertProps,
+    InternalStandardProps as StandardProps,
+    SnackbarContentProps,
+    Theme
+} from "@mui/material";
 import {TransitionProps} from "@mui/material/transitions";
 import {ClickAwayListenerProps} from "@mui/base/ClickAwayListener";
-import {ISnackbarContentProps, SnackbarContentClasses} from "./SnackbarContent";
+import {SnackbarContentClasses} from "./SnackbarContent";
 import {SnackbarClasses} from "./Snackbar";
 import {SxProps} from "@mui/system";
+import {ISnackbarItemProps} from "./Snackbar/SnackbarItem";
 
 export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
@@ -12,16 +18,21 @@ export type ISnackbarMessage = string;
 export type ISnackbarKey = | string | number;
 
 export type VariantType = 'default' | 'error' | 'success' | 'warning' | 'info';
-export type CloseReason = 'timeout' | 'clickaway' | 'maxsnack' | 'instructed';
+export type SnackbarCloseReason =
+    | 'timeout'
+    | 'clickaway'
+    | 'maxsnack'
+    | 'instructed'
+    | 'escapeKeyDown';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TransitionCloseHandler = (event: React.SyntheticEvent<any> | null,
-                                      reason: CloseReason, key?: ISnackbarKey) => void;
+                                      reason: SnackbarCloseReason,
+                                      key?: ISnackbarKey) => void;
 export type TransitionEnterHandler = (node: HTMLElement, isAppearing: boolean,
                                       key: ISnackbarKey) => void;
 export type TransitionHandler = (node: HTMLElement, key: ISnackbarKey) => void;
 
 export type ClassNameMap<ClassKey extends string = string> = Record<ClassKey, string>;
-
 
 export type SnackbarAction = React.ReactNode | ((key: ISnackbarKey) => React.ReactNode);
 
@@ -112,6 +123,156 @@ export interface TransitionHandlerProps {
     onExited: TransitionHandler;
 }
 
+
+export interface ISnackbarProps
+    extends StandardProps<React.HTMLAttributes<HTMLDivElement>> {
+    /**
+     * The action to display. It renders after the message, at the end of the snackbar.
+     */
+    action?: SnackbarContentProps['action'];
+    /**
+     * The anchor of the `Snackbar`.
+     * On smaller screens, the component grows to occupy all the available width,
+     * the horizontal alignment is ignored.
+     * @default { vertical: 'bottom', horizontal: 'left' }
+     */
+    anchorOrigin?: SnackbarOrigin;
+
+    /**
+     * Aria attributes applied to snackbar's content component
+     */
+    ariaAttributes?: React.AriaAttributes;
+
+    /**
+     * The number of milliseconds to wait before automatically calling the
+     * `onClose` function. `onClose` should then set the state of the `open`
+     * prop to hide the Snackbar. This behavior is disabled by default with
+     * the `null` value.
+     * @default null
+     */
+    autoHideDuration?: number | null;
+    /**
+     * Replace the `SnackbarContent` component.
+     */
+    children?: React.ReactElement<any, any>;
+    /**
+     * Override or extend the styles applied to the component.
+     */
+    classes?: Partial<SnackbarClasses>;
+    /**
+     * Props applied to the `ClickAwayListener` element.
+     */
+    ClickAwayListenerProps?: Partial<ClickAwayListenerProps>;
+    /**
+     * Props applied to the [`SnackbarContent`](/material-ui/api/snackbar-content/) element.
+     */
+    ContentProps?: Partial<Omit<ISnackbarContentProps, 'action'>>;
+    /**
+     * If `true`, the `autoHideDuration` timer will expire even if the window is not focused.
+     * @default false
+     */
+    disableWindowBlurListener?: boolean;
+    /**
+     * When displaying multiple consecutive Snackbars from a parent rendering a single
+     * <Snackbar/>, add the key prop to ensure independent treatment of each message.
+     * e.g. <Snackbar key={message} />, otherwise, the message may update-in-place and
+     * features such as autoHideDuration may be canceled.
+     */
+    key?: any;
+    /**
+     * The message to display.
+     */
+    message?: SnackbarContentProps['message'];
+    /**
+     * Callback fired when the component requests to be closed.
+     * Typically `onClose` is used to set state in the parent component,
+     * which is used to control the `Snackbar` `open` prop.
+     * The `reason` parameter can optionally be used to control the response to `onClose`,
+     * for example ignoring `clickaway`.
+     *
+     * @param {React.SyntheticEvent<any> | Event} event The event source of the callback.
+     * @param {string} reason Can be: `"timeout"` (`autoHideDuration` expired), `"clickaway"`, or `"escapeKeyDown"`.
+     */
+    onClose?: (event: React.SyntheticEvent<any> | Event | null,
+               reason: SnackbarCloseReason, key?: ISnackbarKey) => void;
+    /**
+     * If `true`, the component is shown.
+     */
+    open?: boolean;
+    /**
+     * The number of milliseconds to wait before dismissing after user interaction.
+     * If `autoHideDuration` prop isn't specified, it does nothing.
+     * If `autoHideDuration` prop is specified but `resumeHideDuration` isn't,
+     * we default to `autoHideDuration / 2` ms.
+     */
+    resumeHideDuration?: number;
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
+    /**
+     * The component used for the transition.
+     * [Follow this guide](/material-ui/transitions/#transitioncomponent-prop) to learn more about the requirements for this component.
+     * @default Grow
+     */
+    TransitionComponent?: React.JSXElementConstructor<TransitionProps & { children: React.ReactElement<any, any> }>;
+    /**
+     * The duration for the transition, in milliseconds.
+     * You may specify a single timeout for all transitions, or individually with an object.
+     * @default {
+     *   enter: theme.transitions.duration.enteringScreen,
+     *   exit: theme.transitions.duration.leavingScreen,
+     * }
+     */
+    transitionDuration?: TransitionProps['timeout'];
+    /**
+     * Props applied to the transition element.
+     * By default, the element is based on this [`Transition`](http://reactcommunity.org/react-transition-group/transition/) component.
+     * @default {}
+     */
+    TransitionProps?: TransitionProps;
+
+    content?: ISnackbarContentCallback;
+
+    /**
+     * 设置是否显示图标
+     */
+    hideIconVariant?: boolean
+
+    /**
+     *     显示关闭按钮
+     */
+    closeable?: boolean
+
+}
+
+export interface ISnackbarContentProps extends StandardProps<AlertProps, 'children'> {
+    /**
+     * The action to display. It renders after the message, at the end of the snackbar.
+     */
+    action?: React.ReactNode;
+    /**
+     * Override or extend the styles applied to the component.
+     */
+    classes?: Partial<SnackbarContentClasses>;
+    /**
+     * The message to display.
+     */
+    message?: React.ReactNode;
+    /**
+     * The ARIA role attribute of the element.
+     * @default 'alert'
+     */
+    role?: AlertProps['role'];
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx?: SxProps<Theme>;
+
+    ownerState?: any
+}
+
+
 /**
  * @category Shared
  */
@@ -149,63 +310,6 @@ export interface SharedProps extends Omit<ISnackbarProps, 'classes'>,
      *     显示关闭按钮
      */
     closeable?: boolean
-}
-
-interface ISnackbarProps
-    extends StandardProps<React.HTMLAttributes<HTMLDivElement>, SnackbarClassKey> {
-    /**
-     * The anchor of the `Snackbar`.
-     * @default { horizontal: left, vertical: bottom }
-     */
-    anchorOrigin?: SnackbarOrigin;
-    /**
-     * The number of milliseconds to wait before automatically calling the
-     * `onClose` function. By default snackbars get closed after 5000 milliseconds.
-     * Set autoHideDuration to 'null' if you don't want snackbars to automatically close.
-     * Alternatively pass `persist: true` in the options parameter of enqueueSnackbar.
-     * @default 5000
-     */
-    autoHideDuration?: number | null;
-    /**
-     * @ignore
-     * Properties applied to ClickAwayListener component
-     */
-    ClickAwayListenerProps?: Partial<ClickAwayListenerProps>;
-    /**
-     * Aria attributes applied to snackbar's content component
-     */
-    ariaAttributes?: React.AriaAttributes;
-    /**
-     * If `true`, the `autoHideDuration` timer will expire even if the window is not focused.
-     * @default false
-     */
-    disableWindowBlurListener?: boolean;
-    /**
-     * The number of milliseconds to wait before dismissing after user interaction.
-     * If `autoHideDuration` property isn't specified, it does nothing.
-     * If `autoHideDuration` property is specified but `resumeHideDuration` isn't,
-     * we use the default value.
-     * @default autoHideDuration / 2 ms.
-     */
-    resumeHideDuration?: number;
-    /**
-     * The component used for the transition. (e.g. Slide, Grow, Zoom, etc.)
-     * @default Slide
-     */
-    TransitionComponent?: React.ComponentType<TransitionProps>;
-    /**
-     * The duration for the transition, in milliseconds.
-     * You may specify the duration with an object in the following shape:
-     * ```js
-     * transitionDuration={{ enter: 300, exit: 500 }}
-     * ```
-     * @default { enter: 225, exit: 195 }
-     */
-    transitionDuration?: { appear?: number; enter?: number; exit?: number };
-    /**
-     * Properties applied to Transition component (e.g. Slide, Grow, Zoom, etc.)
-     */
-    TransitionProps?: TransitionProps;
 }
 
 
@@ -303,26 +407,26 @@ export interface ISnackbarProviderProps extends SharedProps {
     contentProps?: Partial<Exclude<ISnackbarContentProps, 'iconMapping' | 'title'>>
 }
 
-export interface ISnackbarApiOption {
-    delay?: number;
-}
 
 export class SnackbarProvider extends React.Component<ISnackbarProviderProps> {
     enqueueSnackbar: IProviderContext['enqueueSnackbar'];
     closeSnackbar: IProviderContext['closeSnackbar'];
 }
 
-
 export interface IProviderContext {
     enqueueSnackbar: (message: ISnackbarMessage, option: ISnackbarOption) => ISnackbarKey;
     closeSnackbar: (key?: ISnackbarKey) => void;
 }
 
-
-
+export declare const SnackbarItem: React.ComponentType<ISnackbarItemProps>
+export declare const Snackbar: React.ComponentType<ISnackbarProps>
 export declare const SnackbarContent: React.ComponentType<ISnackbarContentProps & React.RefAttributes<HTMLDivElement>>;
 
-export function useSnackbar(): IProviderContext;
+export interface ISnackbarApiOption {
+    delay?: number;
+}
+
+export declare function useSnackbar(): IProviderContext;
 
 
 

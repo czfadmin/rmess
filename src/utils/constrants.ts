@@ -1,8 +1,8 @@
 import {
-    CloseReason,
     ContainerClassKey,
     Snack,
     SnackbarClassKey,
+    SnackbarCloseReason,
     SnackbarOrigin,
     VariantType
 } from "../.";
@@ -49,11 +49,12 @@ export const DEFAULTS = {
     },
 };
 
-export const REASONS: { [key: string]: CloseReason } = {
+export const REASONS: { [key: string]: SnackbarCloseReason } = {
     TIMEOUT: 'timeout',
     CLICKAWAY: 'clickaway',
     MAXSNACK: 'maxsnack',
     INSTRUCTED: 'instructed',
+    ESC: 'escapeKeyDown'
 };
 
 const numberOrNull = (numberish?: number | null) => (typeof numberish === 'number' ||

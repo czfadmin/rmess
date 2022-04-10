@@ -6,6 +6,5 @@ export {
     SnackbarContent,
     useSnackbar,
     SnackbarProvider
-
 };
 

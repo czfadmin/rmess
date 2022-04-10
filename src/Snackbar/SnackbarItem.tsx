@@ -1,12 +1,16 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Collapse, useThemeProps} from "@mui/material";
-import {RequiredBy, SharedProps, Snack, TransitionHandlerProps} from "../index";
+import {
+    ISnackbarProps,
+    RequiredBy,
+    SharedProps,
+    Snack,
+    TransitionHandlerProps
+} from "../index";
 import createChainedFunction from "../utils/createChainedFunction";
 import Snackbar from "./Snackbar";
 import {DEFAULTS, objectMerge, REASONS} from "../utils/constrants";
-import {ISnackbarProps} from "./index";
-import {ISnackbarContentProps} from "../SnackbarContent";
-
+import {ISnackbarContentProps} from "../index";
 
 type RemovedProps =
     | 'variant' // the one received from Provider is processed and passed to snack prop
@@ -32,6 +36,7 @@ export const getTransitionDirection = (anchorOrigin: Snack['anchorOrigin']): Dir
 };
 
 
+// @ts-ignore
 export interface ISnackbarItemProps
     extends RequiredBy<Omit<SharedProps, RemovedProps>, 'onEntered' | 'onExited' | 'onClose'> {
     snack: Snack,
@@ -39,6 +44,7 @@ export interface ISnackbarItemProps
     onExited: TransitionHandlerProps['onExited'],
     onEntered: TransitionHandlerProps['onEntered']
 }
+
 
 const SnackbarItem: React.FC<ISnackbarItemProps> = React.forwardRef(
     function SnackbarItem(inProps: ISnackbarItemProps, ref: any) {

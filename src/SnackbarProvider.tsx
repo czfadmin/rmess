@@ -131,7 +131,7 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
     /**
      * Hide a snackbar after its timeout.
      */
-    handleCloseSnack: TransitionHandlerProps['onClose'] = (event, reason, key) => {
+    handleCloseSnack: TransitionHandlerProps['onClose'] = (event: any, reason, key) => {
         if (this.props.onClose) {
             this.props.onClose(event, reason, key)
         }

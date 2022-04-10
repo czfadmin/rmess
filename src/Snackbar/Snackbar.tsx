@@ -2,12 +2,11 @@ import {capitalize, Slide, styled, useTheme, useThemeProps} from "@mui/material"
 import * as React from 'react';
 import {useEffect, useRef} from 'react';
 import clsx from 'clsx';
-import {unstable_composeClasses as composeClasses} from '@mui/base';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import {ClickAwayListener, unstable_composeClasses as composeClasses} from '@mui/base';
 import useEventCallback from '../utils/useEventCallback';
 import SnackbarContent from '../SnackbarContent/SnackbarContent';
 import {getSnackbarUtilityClass} from './snackbarClasses';
-import {ISnackbarProps} from "./index";
+import {ISnackbarProps} from "../index";
 import {REASONS} from "../utils/constrants";
 
 const useUtilityClasses = (ownerState: any) => {
@@ -23,7 +22,9 @@ const useUtilityClasses = (ownerState: any) => {
 };
 
 const SnackbarRoot = styled('div', {
-    name: 'MuiSnackbar', slot: 'Root', overridesResolver: (props: any, styles: any) => {
+    name: 'MuiSnackbar',
+    slot: 'Root',
+    overridesResolver: (props: any, styles: any) => {
         const {ownerState} = props;
         return [styles.root,
             styles[`anchorOrigin${capitalize(
@@ -241,7 +242,7 @@ const Snackbar = React.forwardRef(function Snackbar(inProps: ISnackbarProps, ref
                 if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
                     // not calling `preventDefault` since we don't know if people may ignore this event e.g. a permanently open snackbar
                     if (onClose) {
-                        onClose(nativeEvent, 'escapeKeyDown');
+                        onClose(nativeEvent, REASONS.ESC);
                     }
                 }
             }
