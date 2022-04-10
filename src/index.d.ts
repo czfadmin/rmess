@@ -1,7 +1,10 @@
 import * as React from "react";
-import {StandardProps} from "@mui/material";
+import {AlertProps, SnackbarContentProps, StandardProps, Theme} from "@mui/material";
 import {TransitionProps} from "@mui/material/transitions";
 import {ClickAwayListenerProps} from "@mui/base/ClickAwayListener";
+import {ISnackbarContentProps, SnackbarContentClasses} from "./SnackbarContent";
+import {SnackbarClasses} from "./Snackbar";
+import {SxProps} from "@mui/system";
 
 export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
@@ -22,8 +25,9 @@ export type ClassNameMap<ClassKey extends string = string> = Record<ClassKey, st
 
 export type SnackbarAction = React.ReactNode | ((key: ISnackbarKey) => React.ReactNode);
 
-export type SnackbarContentCallback = React.ReactNode | ((key: ISnackbarKey,
-                                                          message: ISnackbarMessage) => React.ReactNode);
+export type ISnackbarContentCallback = React.ReactNode | ((key: ISnackbarKey,
+                                                           message: ISnackbarMessage,
+                                                           variant: VariantType) => React.ReactNode);
 export type SnackbarClassKey =
     | 'root'
     | 'anchorOriginTopCenter'
@@ -57,12 +61,15 @@ export interface SnackbarOrigin {
 
 
 export interface Snack
-    extends RequiredBy<ISnackbarOption, 'key' | 'variant' | 'anchorOrigin'> {
+    extends RequiredBy<ISnackbarOption, 'key' | 'variant' | 'anchorOrigin' | 'contentProps'> {
     message: ISnackbarMessage;
     open: boolean;
     entered: boolean;
     requestClose: boolean;
+    // 用来覆盖全局的hideIconVariant
+    hideIconVariant?: boolean;
 }
+
 /**
  * @category Shared
  */
@@ -126,12 +133,22 @@ export interface SharedProps extends Omit<ISnackbarProps, 'classes'>,
      * Replace the snackbar. Callback used for displaying entirely customized snackbar.
      * @param {string|number} key key of a snackbar
      */
-    content?: SnackbarContentCallback;
+    content?: ISnackbarContentCallback;
     /**
      * Callback used for getting action(s). actions are mostly buttons displayed in Snackbar.
      * @param {string|number} key key of a snackbar
      */
     action?: SnackbarAction;
+
+    /**
+     * 配置SnackbarContent的Props
+     */
+    contentProps?: Partial<ISnackbarContentProps>
+
+    /**
+     *     显示关闭按钮
+     */
+    closeable?: boolean
 }
 
 interface ISnackbarProps
@@ -192,8 +209,6 @@ interface ISnackbarProps
 }
 
 
-
-
 /**
  * @category Enqueue
  */
@@ -208,10 +223,15 @@ export interface ISnackbarOption extends SharedProps {
      * @default false
      */
     persist?: boolean;
+
+    // 是否显示snackbar图标，用于覆盖全局的配置
+    hideIconVariant?: boolean;
 }
 
-
-export interface IconVariant {
+/**
+ * 全局的SnackbarIcon
+ */
+export interface IconMapping {
     /**
      * Icon displayed when variant of a snackbar is set to `default`.
      */
@@ -270,12 +290,17 @@ export interface ISnackbarProviderProps extends SharedProps {
     /**
      * Little icon that is displayed at left corner of a snackbar.
      */
-    iconVariant?: Partial<IconVariant>;
+    iconMapping?: Partial<IconMapping>;
     /**
      * @ignore
      * SnackbarProvider's ref
      */
     ref?: React.Ref<SnackbarProvider>;
+
+    /**
+     * 重新ShardedProps中的contentProps，避免在Provider中使用iconMapping和title
+     */
+    contentProps?: Partial<Exclude<ISnackbarContentProps, 'iconMapping' | 'title'>>
 }
 
 export interface ISnackbarApiOption {
@@ -292,6 +317,7 @@ export interface IProviderContext {
     enqueueSnackbar: (message: ISnackbarMessage, option: ISnackbarOption) => ISnackbarKey;
     closeSnackbar: (key?: ISnackbarKey) => void;
 }
+
 
 
 export declare const SnackbarContent: React.ComponentType<ISnackbarContentProps & React.RefAttributes<HTMLDivElement>>;

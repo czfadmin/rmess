@@ -1,4 +1,4 @@
-import {IconVariant} from "../index";
+import {IconMapping} from "../index";
 import {SvgIcon, SvgIconProps} from "@mui/material";
 import React from "react";
 
@@ -36,7 +36,7 @@ const InfoIcon: Icon = props => (
         0 22,12A10,10 0 0,0 12,2Z" />
     </SvgIcon>
 );
-const defaultIconVariants: IconVariant = {
+const defaultIconVariants: IconMapping = {
     default: undefined,
     success: <CheckIcon style={iconStyles} />,
     warning: <WarningIcon style={iconStyles} />,

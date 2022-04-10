@@ -6,7 +6,7 @@ import {
     SnackbarOrigin,
     VariantType
 } from "../.";
-//import {Slide} from "@mui/material";
+import {Slide} from "@mui/material";
 
 
 export const allClasses: {
@@ -42,7 +42,7 @@ export const DEFAULTS = {
     anchorOrigin: {
         vertical: 'bottom', horizontal: 'left'
     } as SnackbarOrigin,
-    //TransitionComponent: Slide,
+    TransitionComponent: Slide,
     transitionDuration: {
         enter: 225,
         exit: 195,
@@ -67,6 +67,10 @@ export const merge = (options, props, defaults) => (name: keyof Snack): any => {
         return DEFAULTS.autoHideDuration;
     }
 
+    // 处理Bool类型的情况
+    if (typeof options[name] === 'boolean' || props[name] === 'boolean') {
+        return options[name] !== undefined ? options[name] : props[name];
+    }
     return options[name] || props[name] || defaults[name];
 };
 

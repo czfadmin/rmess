@@ -8,12 +8,11 @@ import {ClickAwayListenerProps} from '@mui/base/ClickAwayListener';
 import * as React from "react";
 import {SnackbarClasses} from "./snackbarClasses";
 import {SxProps} from "@mui/system";
-import {ISnackbarKey} from "../index";
+import {ISnackbarContentCallback} from "../index";
+import {ISnackbarContentProps} from "../SnackbarContent";
 
 export {default} from './Snackbar';
 export * from './Snackbar';
-
-export {default as snackbarClasses} from './snackbarClasses';
 export * from './snackbarClasses';
 
 export interface SnackbarOrigin {
@@ -59,7 +58,7 @@ export interface ISnackbarProps
     /**
      * Props applied to the [`SnackbarContent`](/material-ui/api/snackbar-content/) element.
      */
-    ContentProps?: Partial<SnackbarContentProps>;
+    ContentProps?: Partial<Omit<ISnackbarContentProps, 'action'>>;
     /**
      * If `true`, the `autoHideDuration` timer will expire even if the window is not focused.
      * @default false
@@ -124,6 +123,19 @@ export interface ISnackbarProps
      * @default {}
      */
     TransitionProps?: TransitionProps;
+
+    content?: ISnackbarContentCallback;
+
+    /**
+     * 设置是否显示图标
+     */
+    hideIconVariant?: boolean
+
+    /**
+     *     显示关闭按钮
+     */
+    closeable?: boolean
+
 }
 
 /**

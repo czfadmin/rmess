@@ -1,4 +1,4 @@
-import {capitalize, Slide, styled, useTheme, useThemeProps,} from "@mui/material";
+import {capitalize, Slide, styled, useTheme, useThemeProps} from "@mui/material";
 import * as React from 'react';
 import {useEffect, useRef} from 'react';
 import clsx from 'clsx';
@@ -8,46 +8,34 @@ import useEventCallback from '../utils/useEventCallback';
 import SnackbarContent from '../SnackbarContent/SnackbarContent';
 import {getSnackbarUtilityClass} from './snackbarClasses';
 import {ISnackbarProps} from "./index";
+import {REASONS} from "../utils/constrants";
 
 const useUtilityClasses = (ownerState: any) => {
     const {classes, anchorOrigin} = ownerState;
 
     const slots = {
-        root: [
-            'root',
+        root: ['root',
             `anchorOrigin${capitalize(anchorOrigin.vertical)}${capitalize(
-                anchorOrigin.horizontal)}`,
-        ],
+                anchorOrigin.horizontal)}`,],
     };
 
     return composeClasses(slots, getSnackbarUtilityClass, classes);
 };
 
 const SnackbarRoot = styled('div', {
-    name: 'MuiSnackbar',
-    slot: 'Root',
-    overridesResolver: (props: any, styles: any) => {
+    name: 'MuiSnackbar', slot: 'Root', overridesResolver: (props: any, styles: any) => {
         const {ownerState} = props;
-
-        return [
-            styles.root,
-            styles[
-                `anchorOrigin${capitalize(ownerState.anchorOrigin.vertical)}${capitalize(
-                    ownerState.anchorOrigin.horizontal,
-                )}`],
-        ];
+        return [styles.root,
+            styles[`anchorOrigin${capitalize(
+                ownerState.anchorOrigin.vertical)}${capitalize(
+                ownerState.anchorOrigin.horizontal,)}`],];
     },
 })(({theme, ownerState}: any) => {
     const center = {
         ...(!ownerState.isRtl && {
-            left: '50%',
-            right: 'auto',
-            transform: 'translateX(-50%)',
-        }),
-        ...(ownerState.isRtl && {
-            right: '50%',
-            left: 'auto',
-            transform: 'translateX(50%)',
+            left: '50%', right: 'auto', transform: 'translateX(-50%)',
+        }), ...(ownerState.isRtl && {
+            right: '50%', left: 'auto', transform: 'translateX(50%)',
         }),
     };
 
@@ -59,32 +47,23 @@ const SnackbarRoot = styled('div', {
         right: 8,
         height: 'auto',
         justifyContent: 'center',
-        alignItems: 'center',
-        ...(ownerState.anchorOrigin.horizontal === 'left' &&
-            {justifyContent: 'flex-start'}),
-        ...(ownerState.anchorOrigin.horizontal === 'right' &&
-            {justifyContent: 'flex-end'}),
+        alignItems: 'center', ...(ownerState.anchorOrigin.horizontal === 'left' &&
+            {justifyContent: 'flex-start'}), ...(ownerState.anchorOrigin.horizontal ===
+            'right' && {justifyContent: 'flex-end'}),
         [theme.breakpoints.up('sm')]: {
             //...(ownerState.anchorOrigin.vertical === 'top' ? {top: 24} : {bottom: 24}),
-            ...(ownerState.anchorOrigin.horizontal === 'center' && center),
-            ...(ownerState.anchorOrigin.horizontal === 'left' && {
+            ...(ownerState.anchorOrigin.horizontal === 'center' &&
+                center), ...(ownerState.anchorOrigin.horizontal === 'left' && {
                 ...(!ownerState.isRtl && {
-                    left: 24,
-                    right: 'auto',
+                    left: 24, right: 'auto',
+                }), ...(ownerState.isRtl && {
+                    right: 24, left: 'auto',
                 }),
-                ...(ownerState.isRtl && {
-                    right: 24,
-                    left: 'auto',
-                }),
-            }),
-            ...(ownerState.anchorOrigin.horizontal === 'right' && {
+            }), ...(ownerState.anchorOrigin.horizontal === 'right' && {
                 ...(!ownerState.isRtl && {
-                    right: 24,
-                    left: 'auto',
-                }),
-                ...(ownerState.isRtl && {
-                    left: 24,
-                    right: 'auto',
+                    right: 24, left: 'auto',
+                }), ...(ownerState.isRtl && {
+                    left: 24, right: 'auto',
                 }),
             }),
         },
@@ -93,51 +72,68 @@ const SnackbarRoot = styled('div', {
 
 const Snackbar = React.forwardRef(function Snackbar(inProps: ISnackbarProps, ref: any) {
     //@ts-ignore
-    const props = useThemeProps({props: inProps, name: 'MuiSnackbar'}),
-        theme: any = useTheme(), defaultTransitionDuration = {
-            enter: theme.transitions.duration.enteringScreen,
-            exit: theme.transitions.duration.leavingScreen,
-        }, {
-            action,
-            anchorOrigin: {vertical, horizontal} = {vertical: 'bottom', horizontal: 'left'},
-            autoHideDuration = null,
-            children,
-            className,
-            ClickAwayListenerProps,
-            ContentProps,
-            disableWindowBlurListener = false,
-            message,
-            onBlur,
-            onClose,
-            onFocus,
-            open,
-            resumeHideDuration,
-            TransitionComponent = Slide,
-            transitionDuration = defaultTransitionDuration,
+    const props = useThemeProps({props: inProps, name: 'MuiSnackbar'});
+    const theme: any = useTheme();
+    const defaultTransitionDuration = {
+        enter: theme.transitions.duration.enteringScreen,
+        exit: theme.transitions.duration.leavingScreen,
+    }
+    const {
+        action,
+        closeable,
+        hideIconVariant,
+        anchorOrigin: {vertical, horizontal} = {
+            vertical: 'bottom', horizontal: 'left'
+        },
+        content,
+        autoHideDuration = null,
+        className,
+        disableWindowBlurListener = false,
+        message,
+        onBlur,
+        onClose,
+        onFocus,
+        open,
+        resumeHideDuration,
+        TransitionComponent = Slide,
+        transitionDuration = defaultTransitionDuration,
+
+        onMouseEnter,
+        onMouseLeave,
+
+        // @ts-ignore
+        TransitionProps: {onEnter, onExited, ...transitionProps},
+        ClickAwayListenerProps,
+        ContentProps,
+
+        ...other
+    } = props
+
+
+    const isRtl = theme.direction === 'rtl'
+    const ownerState = {...props, anchorOrigin: {vertical, horizontal}, isRtl}
+    const classes = useUtilityClasses(ownerState)
+    const timerAutoHide = useRef()
+    const [exited, setExited] = React.useState(true)
+
+
+    const handleClose = useEventCallback((...args: any) => {
+        if (onClose) {
             // @ts-ignore
-            TransitionProps: {onEnter, onExited, ...transitionProps},
-            ...other
-        } = props, isRtl = theme.direction === 'rtl',
-        ownerState = {...props, anchorOrigin: {vertical, horizontal}, isRtl},
-        classes = useUtilityClasses(ownerState),
-        timerAutoHide = useRef(), [exited, setExited] = React.useState(true),
-        handleClose = useEventCallback((args: any[]) => {
-            if (onClose) {
-                // @ts-ignore
-                onClose(...args);
-            }
-        }), setAutoHideTimer = useEventCallback((autoHideDurationParam: any) => {
-            if (!onClose || autoHideDurationParam == null) {
-                return;
-            }
+            onClose(...args);
+        }
+    })
+    const setAutoHideTimer = useEventCallback((autoHideDurationParam: any) => {
+        if (!onClose || autoHideDurationParam == null) {
+            return;
+        }
 
-            clearTimeout(timerAutoHide.current);
-            //@ts-ignore
-            timerAutoHide.current = setTimeout(() => {
-                handleClose(null, 'timeout');
-            }, autoHideDurationParam);
-        });
-
+        clearTimeout(timerAutoHide.current);
+        //@ts-ignore
+        timerAutoHide.current = setTimeout(() => {
+            handleClose(null, 'timeout');
+        }, autoHideDurationParam);
+    });
 
     useEffect(() => {
         if (open) {
@@ -230,6 +226,7 @@ const Snackbar = React.forwardRef(function Snackbar(inProps: ISnackbarProps, ref
         return undefined;
     }, [disableWindowBlurListener, handleResume, open]);
 
+
     useEffect(() => {
         if (!open) {
             return undefined;
@@ -257,38 +254,45 @@ const Snackbar = React.forwardRef(function Snackbar(inProps: ISnackbarProps, ref
         };
     }, [exited, open, onClose]);
 
+
     // So we only render active snackbars.
     if (!open && exited) {
         return null;
     }
 
-    return (
-        <ClickAwayListener onClickAway={handleClickAway} {...ClickAwayListenerProps}>
-            <SnackbarRoot
-                className={clsx(classes.root, className)}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                ownerState={ownerState}
-                ref={ref}
-                {...other}
+
+    return (<ClickAwayListener onClickAway={handleClickAway} {...ClickAwayListenerProps}>
+        <SnackbarRoot
+            className={clsx(classes.root, className)}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            ownerState={ownerState}
+            ref={ref}
+            {...other}
+        >
+            <TransitionComponent
+                appear
+                in={open}
+                timeout={transitionDuration}
+                direction={vertical === 'top' ? 'down' : 'up'}
+                onEnter={handleEnter}
+                onExited={handleExited}
+                {...transitionProps}
             >
-                <TransitionComponent
-                    appear
-                    in={open}
-                    timeout={transitionDuration}
-                    direction={vertical === 'top' ? 'down' : 'up'}
-                    onEnter={handleEnter}
-                    onExited={handleExited}
-                    {...transitionProps}
-                >
-                    {children || <SnackbarContent message={message}
-                                                  action={action} {...ContentProps} />}
-                </TransitionComponent>
-            </SnackbarRoot>
-        </ClickAwayListener>
-    );
+                {/* @ts-ignore*/}
+                {content || <SnackbarContent message={message}
+                                             action={action}
+                                             icon={hideIconVariant || ContentProps?.icon}
+                                             {...ContentProps}
+                                             onClose={closeable ?
+                                                 (event) => handleClose(event,
+                                                     REASONS.INSTRUCTED,) : undefined}
+                />}
+            </TransitionComponent>
+        </SnackbarRoot>
+    </ClickAwayListener>);
 });
 
 export default Snackbar

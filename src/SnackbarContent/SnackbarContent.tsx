@@ -1,11 +1,10 @@
-import {Paper, styled,} from "@mui/material";
+import {Alert, AlertTitle, styled, useThemeProps,} from "@mui/material";
 import * as React from 'react';
-import clsx from 'clsx';
 import {unstable_composeClasses as composeClasses} from '@mui/base';
-import {emphasize, useThemeProps} from '@mui/system';
 
 import {getSnackbarContentUtilityClass} from './snackbarContentClasses';
 import {ISnackbarContentProps} from ".";
+import clsx from "clsx";
 
 const useUtilityClasses = (ownerState: any) => {
     const {classes} = ownerState;
@@ -19,18 +18,13 @@ const useUtilityClasses = (ownerState: any) => {
     return composeClasses(slots, getSnackbarContentUtilityClass, classes);
 };
 
-const SnackbarContentRoot = styled(Paper, {
+const SnackbarContentRoot = styled(Alert, {
     name: 'MuiSnackbarContent',
     slot: 'Root',
     overridesResolver: (props: any, styles: any) => styles.root,
-})(({theme}: any) => {
-    const emphasis = theme.palette.mode === 'light' ? 0.8 : 0.98;
-    const backgroundColor = emphasize(theme.palette.background.default, emphasis);
-
+})(({theme, ownerState}: any) => {
     return {
         ...theme.typography.body2,
-        color: theme.palette.getContrastText(backgroundColor),
-        backgroundColor,
         display: 'flex',
         alignItems: 'center',
         flexWrap: 'wrap',
@@ -48,52 +42,33 @@ const SnackbarContentMessage = styled('div', {
     name: 'MuiSnackbarContent',
     slot: 'Message',
     overridesResolver: (props: any, styles: any) => styles.message,
-})({
-    padding: '8px 0',
-});
-
-const SnackbarContentAction = styled('div', {
-    name: 'MuiSnackbarContent',
-    slot: 'Action',
-    overridesResolver: (props: any, styles: any) => styles.action,
-})({
-    display: 'flex',
-    alignItems: 'center',
-    marginLeft: 'auto',
-    paddingLeft: 16,
-    marginRight: -8,
-});
+})({});
 
 
 const SnackbarContent = React.forwardRef(
-    function SnackbarContent(inProps: ISnackbarContentProps, ref:any) {
+    function SnackbarContent(inProps: ISnackbarContentProps, ref: any) {
         const props = useThemeProps({props: inProps, name: 'MuiSnackbarContent'});
-        const {action, className, message, role = 'alert', ...other} = props;
-        const ownerState:any = props as any;
+        const {action, className, message, title, role = 'alert', ...other} = props;
+        const ownerState: any = props as any;
         const classes = useUtilityClasses(ownerState);
-
         return (
             <SnackbarContentRoot
                 role={role}
-                square
-                elevation={6}
+                severity={'error'}
                 className={clsx(classes.root, className)}
                 ownerState={ownerState}
+                action={action}
                 ref={ref}
                 {...other}
             >
+                {title && <AlertTitle>{title}</AlertTitle>}
                 <SnackbarContentMessage className={classes.message}
                                         ownerState={ownerState}>
                     {message}
                 </SnackbarContentMessage>
-                {action ? (
-                    <SnackbarContentAction className={classes.action}
-                                           ownerState={ownerState}>
-                        {action}
-                    </SnackbarContentAction>
-                ) : null}
             </SnackbarContentRoot>
         );
     });
+
 
 export default SnackbarContent;

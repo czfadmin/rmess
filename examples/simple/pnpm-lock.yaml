@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@mui/icons-material': ^5.6.0
   '@mui/material': ^5.6.0
   '@types/react': ^17.0.33
   '@types/react-dom': ^17.0.10
@@ -11,6 +12,7 @@ specifiers:
   vite: ^2.9.0
 
 dependencies:
+  '@mui/icons-material': registry.npmmirror.com/@mui/icons-material/5.6.0_d22fe2b6fe7470869e3d6fe144588aa3
   '@mui/material': registry.npmmirror.com/@mui/material/5.6.0_b49bddbe4b905ced4713cb857cca91fa
   react: registry.npmmirror.com/react/17.0.2
   react-dom: registry.npmmirror.com/react-dom/17.0.2_react@17.0.2
@@ -446,6 +448,26 @@ packages:
       react: registry.npmmirror.com/react/17.0.2
       react-dom: registry.npmmirror.com/react-dom/17.0.2_react@17.0.2
       react-is: registry.npmmirror.com/react-is/17.0.2
+    dev: false
+
+  registry.npmmirror.com/@mui/icons-material/5.6.0_d22fe2b6fe7470869e3d6fe144588aa3:
+    resolution: {integrity: sha512-2GDGt+/BbwM3oVkF84b9FFKQdQ9TxBJIRnTwT99vO2mimdfJaojxMRB2lkysm9tUY4HOf0yoU6O//X6GTC0Zhw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@mui/icons-material/-/icons-material-5.6.0.tgz}
+    id: registry.npmmirror.com/@mui/icons-material/5.6.0
+    name: '@mui/icons-material'
+    version: 5.6.0
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.0.0
+      '@types/react': ^16.8.6 || ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': registry.npmmirror.com/@babel/runtime/7.17.9
+      '@mui/material': registry.npmmirror.com/@mui/material/5.6.0_b49bddbe4b905ced4713cb857cca91fa
+      '@types/react': registry.npmmirror.com/@types/react/17.0.44
+      react: registry.npmmirror.com/react/17.0.2
     dev: false
 
   registry.npmmirror.com/@mui/material/5.6.0_b49bddbe4b905ced4713cb857cca91fa:

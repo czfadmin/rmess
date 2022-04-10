@@ -65,6 +65,8 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
         const id = hasSpecifiedKey ? key as ISnackbarKey :
             new Date().getTime() + Math.random()
         const merger = merge(option, this.props, DEFAULTS)
+
+        // 处理SnackbarItem中的props，snack将在SnackbarItem组件中处理并下传到Snackbar组件的SnackContent中
         const snack: Snack = {
             key: id,
             message,
@@ -73,8 +75,14 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
             requestClose: false,
             variant: merger('variant'),
             anchorOrigin: merger('anchorOrigin'),
-            autoHideDuration: merger('autoHideDuration')
+            autoHideDuration: merger('autoHideDuration'),
+            contentProps: merger("contentProps"),
+            content: merger('content'),
+            action: option.action,
+            hideIconVariant: merger('hideIconVariant'),
+            closeable: merger("closeable")
         }
+
         if (opt.persist) {
             snack.autoHideDuration = undefined
         }
@@ -124,7 +132,6 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
      * Hide a snackbar after its timeout.
      */
     handleCloseSnack: TransitionHandlerProps['onClose'] = (event, reason, key) => {
-        console.log(key)
         if (this.props.onClose) {
             this.props.onClose(event, reason, key)
         }
@@ -132,6 +139,7 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
             return;
         }
 
+        // 当为传递key时关闭所有的snackbar
         const shouldCloseAll = key === undefined
         this.setState(({snacks, queue}) => ({
             snacks: snacks.map(it => {
@@ -147,6 +155,7 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
 
     /**
      * Close snackbar with the given key
+     * 关闭指定的key的snackbar
      */
     closeSnackbar: IProviderContext['closeSnackbar'] = (key?: ISnackbarKey) => {
         const toBeClosed = this.state.snacks.find(item => item.key === key)
@@ -180,7 +189,6 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
             if (newState.queue.length === 0) {
                 return newState;
             }
-
             return this.handleDismissOldest(newState);
         });
     };
@@ -196,7 +204,6 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
             return this.handleDismissOldest(state)
         }
         return this.processQueue(state)
-
     }
 
     /**
@@ -226,11 +233,13 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
         if (state.snacks.some(item => !item.open || item.requestClose)) {
             return state
         }
-        let popped = true;
+        let popped = false;
         let ignore = false;
         const persistentCount = state.snacks.reduce((acc, current) => (
             acc + (current.open && current.persist ? 1 : 0)
         ), 0)
+
+        // 当snackbar.persis === true的数量等于maxSnack的时候，继续移除最早的snackbar
         if (persistentCount === this.maxSnack) {
             ignore = true
         }
@@ -266,8 +275,8 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
             preventDuplicate,
             variant,
             anchorOrigin,
-            hideIconVariant,
-            iconVariant,
+            hideIconVariant = DEFAULTS.hideIconVariant,
+            iconMapping,
             dense,
             maxSnack,
             ...props
@@ -287,7 +296,6 @@ class SnackbarProvider extends Component<ISnackbarProviderProps, ISnackbarProvid
         // 根据不同anchor显示 不同的显示区域的Snackbar
         const snackbars = Object.keys(categ).map((origin) => {
             const snacks = categ[origin]
-
             return (
                 <SnackbarContainer
                     key={origin}

@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { SxProps, Theme } from '@mui/system';
-import { SnackbarContentClasses } from './snackbarContentClasses';
-import {PaperProps, InternalStandardProps as StandardProps } from '@mui/material';
+import {SxProps, Theme} from '@mui/system';
+import {SnackbarContentClasses} from './snackbarContentClasses';
+import {AlertProps, InternalStandardProps as StandardProps} from '@mui/material';
 
 
-
-export interface ISnackbarContentProps extends StandardProps<PaperProps, 'children'> {
+export interface ISnackbarContentProps extends StandardProps<AlertProps, 'children'> {
     /**
      * The action to display. It renders after the message, at the end of the snackbar.
      */
@@ -22,11 +21,13 @@ export interface ISnackbarContentProps extends StandardProps<PaperProps, 'childr
      * The ARIA role attribute of the element.
      * @default 'alert'
      */
-    role?: PaperProps['role'];
+    role?: AlertProps['role'];
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
     sx?: SxProps<Theme>;
+
+    ownerState?: any
 }
 
 /**
