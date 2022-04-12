@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import './App.css'
-import {ISnackbarKey, useSnackbar} from "react-message";
+import {ISnackbarKey, useSnackbar} from "rmess";
 
 function App() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
@@ -17,7 +17,6 @@ function App() {
             hideIconVariant: false,
             closeable: true
         })
-        setKey(_key)
     }
     return (
         <div className="App">

@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
-import {SnackbarProvider} from "react-message";
+import {SnackbarProvider} from "rmess";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 ReactDOM.render(<React.StrictMode>

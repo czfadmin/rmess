@@ -1,6 +1,6 @@
-import {Alert, AlertTitle, styled, useThemeProps,} from "@mui/material";
 import * as React from 'react';
-import {unstable_composeClasses as composeClasses} from '@mui/base';
+import {Alert, AlertTitle, styled, useThemeProps,} from "@mui/material";
+import {unstable_composeClasses as composeClasses} from '@mui/material';
 
 import {getSnackbarContentUtilityClass} from './snackbarContentClasses';
 import {ISnackbarContentProps} from "../index";

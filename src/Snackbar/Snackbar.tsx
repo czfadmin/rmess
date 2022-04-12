@@ -2,7 +2,7 @@ import {capitalize, Slide, styled, useTheme, useThemeProps} from "@mui/material"
 import * as React from 'react';
 import {useEffect, useRef} from 'react';
 import clsx from 'clsx';
-import {ClickAwayListener, unstable_composeClasses as composeClasses} from '@mui/base';
+import {ClickAwayListener, unstable_composeClasses as composeClasses} from '@mui/material';
 import useEventCallback from '../utils/useEventCallback';
 import SnackbarContent from '../SnackbarContent/SnackbarContent';
 import {getSnackbarUtilityClass} from './snackbarClasses';

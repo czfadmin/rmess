@@ -421,11 +421,6 @@ export interface IProviderContext {
 export declare const SnackbarItem: React.ComponentType<ISnackbarItemProps>
 export declare const Snackbar: React.ComponentType<ISnackbarProps>
 export declare const SnackbarContent: React.ComponentType<ISnackbarContentProps & React.RefAttributes<HTMLDivElement>>;
-
-export interface ISnackbarApiOption {
-    delay?: number;
-}
-
 export declare function useSnackbar(): IProviderContext;
 
 

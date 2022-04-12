@@ -1,6 +1,6 @@
+import React from "react";
 import {IconMapping} from "../index";
 import {SvgIcon, SvgIconProps} from "@mui/material";
-import React from "react";
 
 const iconStyles = {
     fontSize: 20,
