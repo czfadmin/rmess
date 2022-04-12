@@ -3,4 +3,4 @@ examples/simple/node_modules
 .idea
 .git
 .vscode
-/dist
+state.html
