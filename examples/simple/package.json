@@ -11,7 +11,8 @@
     "@mui/icons-material": "^5.6.0",
     "@mui/material": "^5.6.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "rmess": "^1.0.2"
   },
   "devDependencies": {
     "@types/react": "^17.0.33",

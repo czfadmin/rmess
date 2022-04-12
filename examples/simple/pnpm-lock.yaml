@@ -8,6 +8,7 @@ specifiers:
   '@vitejs/plugin-react': ^1.0.7
   react: ^17.0.2
   react-dom: ^17.0.2
+  rmess: ^1.0.2
   typescript: ^4.5.4
   vite: ^2.9.0
 
@@ -16,6 +17,7 @@ dependencies:
   '@mui/material': registry.npmmirror.com/@mui/material/5.6.0_b49bddbe4b905ced4713cb857cca91fa
   react: registry.npmmirror.com/react/17.0.2
   react-dom: registry.npmmirror.com/react-dom/17.0.2_react@17.0.2
+  rmess: 1.0.2_e8d2c8d67810fade37f3acd3b0002542
 
 devDependencies:
   '@types/react': registry.npmmirror.com/@types/react/17.0.44
@@ -25,6 +27,11 @@ devDependencies:
   vite: registry.npmmirror.com/vite/2.9.1
 
 packages:
+
+  /clsx/1.1.1:
+    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+    engines: {node: '>=6'}
+    dev: false
 
   /esbuild-android-64/0.14.34:
     resolution: {integrity: sha512-XfxcfJqmMYsT/LXqrptzFxmaR3GWzXHDLdFNIhm6S00zPaQF1TBBWm+9t0RZ6LRR7iwH57DPjaOeW20vMqI4Yw==}
@@ -213,6 +220,26 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /rmess/1.0.2_e8d2c8d67810fade37f3acd3b0002542:
+    resolution: {integrity: sha512-pRSDyTWqaOo2FYLoimyPc8Be7iqU2cgW01jCUMEzcjfoI9MM4+pRWtIxc0T3oUUgYsIt3WaOOvZ3r3FJfOpM3w==}
+    peerDependencies:
+      '@emotion/react': ^11.8.2
+      '@emotion/styled': ^11.8.1
+      '@mui/material': ^5.6.0
+      react: ^16.14.0
+      react-dom: ^16.14.0
+    peerDependenciesMeta:
+      '@emotion/react':
+        optional: true
+      '@emotion/styled':
+        optional: true
+    dependencies:
+      '@mui/material': registry.npmmirror.com/@mui/material/5.6.0_b49bddbe4b905ced4713cb857cca91fa
+      clsx: 1.1.1
+      react: registry.npmmirror.com/react/17.0.2
+      react-dom: registry.npmmirror.com/react-dom/17.0.2_react@17.0.2
+    dev: false
 
   registry.npmmirror.com/@ampproject/remapping/2.1.2:
     resolution: {integrity: sha512-hoyByceqwKirw7w3Z7gnIIZC3Wx3J484Y3L/cMpXFbr7d9ZQj2mODrirNzcJa+SM3UlpWXYvKV4RlRpFXlWgXg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@ampproject/remapping/-/remapping-2.1.2.tgz}
