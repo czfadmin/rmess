@@ -1,6 +1,6 @@
 {
   "name": "rmess",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "一个Snackbar组件",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
