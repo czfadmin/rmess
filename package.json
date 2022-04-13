@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "dev": "rollup -c -w"
+    "dev": "cross-env NODE_ENV=dev && rollup -c -w"
   },
   "keywords": [
     "snackbar",
@@ -44,6 +44,7 @@
     "@types/react-dom": "^18.0.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "babel-preset-env": "^1.7.0",
+    "cross-env": "^7.0.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "rollup": "^2.70.1",

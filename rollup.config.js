@@ -22,7 +22,7 @@ export default {
                 "@mui/material": "@mui/material",
                 "clsx": "clsx",
             },
-            sourcemap: false,
+            sourcemap: process.env.NODE_ENV === 'dev',
         },
         {
             file: "dist/index.esm.js",
@@ -35,7 +35,7 @@ export default {
                 "@mui/material": "@mui/material",
                 "clsx": "clsx",
             },
-            sourcemap: false,
+            sourcemap: true,
 
         },
     ],

@@ -1,15 +1,11 @@
-import {useState} from 'react'
 import './App.css'
-import {ISnackbarKey, useSnackbar} from "rmess";
+import {rmessageAPI} from "rmess";
 
 function App() {
-    const {enqueueSnackbar, closeSnackbar} = useSnackbar()
-    const [key, setKey] = useState<ISnackbarKey>()
-    const handleShowSnackbar = () => {
-        const _key = enqueueSnackbar("Hello World", {
-            variant: "warning",
+    const handleShowSnackbar = (variant: string) => {
+        const _key = rmessageAPI[variant]("Hello World", {
             anchorOrigin: {
-                vertical: "bottom",
+                vertical: "top",
                 horizontal: 'left'
             },
             contentProps: {},
@@ -18,10 +14,12 @@ function App() {
             closeable: true
         })
     }
+    const variantTypeList = ["error", "info", "success", "warning"]
     return (
         <div className="App">
-            <button onClick={handleShowSnackbar}> Show Snackbar</button>
-            <button onClick={() => closeSnackbar(key)}>Close</button>
+            {variantTypeList.map(variant => (
+                <button onClick={() => handleShowSnackbar(variant)}>{variant}</button>))}
+
         </div>
     )
 }

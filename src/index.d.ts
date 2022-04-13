@@ -367,7 +367,7 @@ export interface ISnackbarProviderProps extends SharedProps {
      * Most of the time this is your App. every component from this point onward
      * will be able to show snackbars.
      */
-    children: React.ReactNode | React.ReactNode[];
+    children?: React.ReactNode | React.ReactNode[];
     /**
      * Denser margins for snackbars. Recommended to be used on mobile devices.
      * @default false
@@ -407,6 +407,27 @@ export interface ISnackbarProviderProps extends SharedProps {
     contentProps?: Partial<Exclude<ISnackbarContentProps, 'iconMapping' | 'title'>>
 }
 
+export interface IRmessageProps extends ISnackbarProviderProps {
+
+}
+
+export interface IRmessageOption extends Partial<ISnackbarOption> {
+
+}
+
+
+export interface IRmessageAPI {
+    show(message: ISnackbarMessage, option?: ISnackbarOption): ISnackbarKey
+
+    error(message: ISnackbarMessage, option?: ISnackbarOption): ISnackbarKey
+
+    info(message: ISnackbarMessage, option?: ISnackbarOption): ISnackbarKey
+
+    success(message: ISnackbarMessage, option?: ISnackbarOption): ISnackbarKey
+
+    warning(message: ISnackbarMessage, option?: ISnackbarOption): ISnackbarKey
+}
+
 
 export class SnackbarProvider extends React.Component<ISnackbarProviderProps> {
     enqueueSnackbar: IProviderContext['enqueueSnackbar'];
@@ -418,10 +439,14 @@ export interface IProviderContext {
     closeSnackbar: (key?: ISnackbarKey) => void;
 }
 
+
 export declare const SnackbarItem: React.ComponentType<ISnackbarItemProps>
 export declare const Snackbar: React.ComponentType<ISnackbarProps>
 export declare const SnackbarContent: React.ComponentType<ISnackbarContentProps & React.RefAttributes<HTMLDivElement>>;
+
 export declare function useSnackbar(): IProviderContext;
+
+export declare const rmessageAPI:IRmessageAPI
 
 
 
