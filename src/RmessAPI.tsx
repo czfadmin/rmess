@@ -1,52 +1,64 @@
-import {IRmessageAPI, IRmessageOption, ISnackbarKey, ISnackbarMessage,} from "./index";
-import {Rmessage} from "./Rmessage";
+import {
+    IRmessageConfig,
+    IRmessageOption,
+    ISnackbarKey,
+    ISnackbarMessage,
+    SnackbarProvider,
+} from "./index";
 
+let messageInstance: SnackbarProvider | null;
 
-let messageInstance: Rmessage | null
+let globalConfig: IRmessageConfig;
 
-
-function getRMessageInstance(args: { message: ISnackbarMessage, option?: IRmessageOption },
-                             callback: (instance: Rmessage) => ISnackbarKey) {
-
+function getRMessageInstance(
+    args: { message: ISnackbarMessage; option?: IRmessageOption },
+    callback: (instance: SnackbarProvider) => ISnackbarKey
+) {
     if (messageInstance) {
-        callback(messageInstance)
-        return
+        callback(messageInstance);
+        return;
     }
 
-    Rmessage.newInstance(null, (messageIns: Rmessage) => {
+    SnackbarProvider.newInstance(null, (messageIns: SnackbarProvider) => {
         if (messageInstance) {
-            callback(messageInstance)
-            return
+            callback(messageInstance);
+            return;
         }
-        messageInstance = messageIns
-        callback(messageInstance)
-    })
+        messageInstance = messageIns;
+        callback(messageInstance);
+    });
 }
 
 function notify(message: ISnackbarMessage, option?: Partial<IRmessageOption>) {
-    getRMessageInstance({message, option}, (instance: Rmessage) => {
-        return instance.show(message, option || {})
-    })
+    getRMessageInstance({ message, option }, (instance: SnackbarProvider) => {
+        return instance.show(message, { ...globalConfig, ...option });
+    });
 }
-
+function config(config: IRmessageConfig) {
+    globalConfig = config;
+}
 
 const rmessageAPI: any = {
-    show: notify
-}
-const variantTypeList = ["error", "info", "success", "warning"]
+    show: notify,
+    config: config,
+};
+
+
+const variantTypeList = ["error", "info", "success", "warning"];
 
 function attachVariantToAPI() {
-    variantTypeList.forEach(variant => {
-        rmessageAPI[variant] =
-            (message: ISnackbarMessage, option: IRmessageOption) => rmessageAPI.show(message, {
-                    ...option,
-                    variant
-                } as IRmessageOption)
-
-    })
+    variantTypeList.forEach((variant) => {
+        rmessageAPI[variant] = (
+            message: ISnackbarMessage,
+            option: IRmessageOption
+        ) =>
+            rmessageAPI.show(message, {
+                ...option,
+                variant,
+            } as IRmessageOption);
+    });
 }
 
+attachVariantToAPI();
 
-attachVariantToAPI()
-
-export default rmessageAPI as IRmessageAPI
+export default rmessageAPI

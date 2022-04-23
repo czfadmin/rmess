@@ -8,6 +8,7 @@ import {sizeSnapshot} from "rollup-plugin-size-snapshot";
 import {terser} from "rollup-plugin-terser";
 import {visualizer} from "rollup-plugin-visualizer";
 
+const production = process.env.NODE_ENV === 'production';
 export default {
     input: "src/index.js",
     output: [
@@ -15,49 +16,49 @@ export default {
             file: "dist/index.cjs.js",
             format: "cjs",
             globals: {
-                'react': 'React',
+                react: "React",
                 "react-dom": "ReactDOM",
                 "@mui/system": "@mui/system",
                 "@mui/base": "@mui/base",
                 "@mui/material": "@mui/material",
-                "clsx": "clsx",
+                clsx: "clsx",
             },
-            sourcemap: process.env.NODE_ENV === 'dev',
+            sourcemap: !production,
         },
         {
             file: "dist/index.esm.js",
             format: "esm",
             globals: {
-                'react': 'React',
+                react: "React",
                 "react-dom": "ReactDOM",
                 "@mui/system": "@mui/system",
                 "@mui/base": "@mui/base",
                 "@mui/material": "@mui/material",
-                "clsx": "clsx",
+                clsx: "clsx",
             },
-            sourcemap: true,
-
+            sourcemap: !production,
         },
     ],
     plugins: [
-        cleanupPlugin(),
-        progress({
-            clearLine: false // default: true
-        }),
+        !production && cleanupPlugin(),
+        !production &&
+            progress({
+                clearLine: false, // default: true
+            }),
 
         babel({
-            exclude: 'node_modules/**', // 只编译我们的源代码
-            babelHelpers: 'inline'
+            exclude: "node_modules/**", // 只编译我们的源代码
+            babelHelpers: "inline",
         }),
 
         typescript({
-            allowSyntheticDefaultImports: true
+            allowSyntheticDefaultImports: true,
         }),
         terser(),
         bundleSize(),
         sizeSnapshot(),
         visualizer(),
-        copy({targets: [{src: 'src/index.d.ts', dest: 'dist'}]}),
+        copy({ targets: [{ src: "src/index.d.ts", dest: "dist" }] }),
     ],
     // 外部依赖
     external: [
@@ -66,7 +67,6 @@ export default {
         "@mui/system",
         "@mui/material",
         "react-dom",
-        "clsx"
-    ]
-
+        "clsx",
+    ],
 };

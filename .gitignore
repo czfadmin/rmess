@@ -4,3 +4,4 @@ examples/simple/node_modules
 .git
 .vscode
 state.html
+.DS_Store
